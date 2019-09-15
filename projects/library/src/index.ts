@@ -1,17 +1,17 @@
-import { ModuleWithProviders, NgModule } from '@angular/core';
+import { NgModule } from '@angular/core';
 
-import {FroalaEditorModule} from './editor';
-import {FroalaViewModule} from './view';
+import {FroalaEditorModule} from './editor/index';
+import {FroalaViewModule} from './view/index';
 
 export {
   FroalaEditorDirective,
   FroalaEditorModule
-} from './editor';
+} from './editor/index';
 
 export {
   FroalaViewDirective,
   FroalaViewModule
-} from './view';
+} from './view/index';
 
 const MODULES = [
   FroalaEditorModule,
