@@ -1,9 +1,10 @@
 {
+  "extends": "../../tsconfig.json",
   "compilerOptions": {
     "declaration": true,
     "module": "es2015",
-    "target": "es5",
-    "baseUrl": ".",
+    "target": "es2015",
+    "baseUrl": "./",
     "stripInternal": true,
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
@@ -26,6 +27,6 @@
     "flatModuleId": "angular-froala-wysiwyg"
   },
   "files": [
-    "./index.ts"
+    "./src/index.ts"
   ]
 }

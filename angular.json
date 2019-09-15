@@ -4,32 +4,32 @@
   "newProjectRoot": "projects",
   "projects": {
     "angular-froala-wysiwyg": {
-      "root": "src",
+      "root": "projects/library",
       "projectType": "library",
       "architect": {
         "build": {
           "builder": "@angular-devkit/build-ng-packagr:build",
           "options": {
-            "project": "src/ng-package.json",
-            "tsConfig": "src/tsconfig.es5.json"
+            "project": "projects/library/ng-package.json",
+            "tsConfig": "projects/library/tsconfig.json"
           }
         }
       }
     },
     "angular-froala-wysiwyg-demo": {
-      "root": "demo",
-      "sourceRoot": "demo/src",
+      "root": "projects/demo",
+      "sourceRoot": "projects/demo/src",
       "projectType": "application",
       "architect": {
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
-            "outputPath": "demo/dist",
-            "index": "demo/src/index.html",
-            "main": "demo/src/main.ts",
-            "tsConfig": "demo/src/tsconfig.json",
+            "outputPath": "dist-demo",
+            "index": "projects/demo/src/index.html",
+            "main": "projects/demo/src/main.ts",
+            "tsConfig": "projects/demo/tsconfig.json",
             "assets": [
-              "demo/src/image.jpg"
+              "projects/demo/src/image.jpg"
             ],
             "styles": [
               "node_modules/froala-editor/css/froala_editor.pkgd.css"
@@ -39,6 +39,12 @@
           },
           "configurations": {
             "production": {
+              "budgets": [
+                {
+                  "type": "anyComponentStyle",
+                  "maximumWarning": "6kb"
+                }
+              ],
               "optimization": false,
               "outputHashing": "all",
               "sourceMap": false,
@@ -54,14 +60,14 @@
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
           "options": {
-            "browserTarget": "angular-froala-wysiwyg:build"
+            "browserTarget": "angular-froala-wysiwyg-demo:build"
           },
           "configurations": {}
         },
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "browserTarget": "angular-froala-wysiwyg:build"
+            "browserTarget": "angular-froala-wysiwyg-demo:build"
           }
         },
         "lint": {
