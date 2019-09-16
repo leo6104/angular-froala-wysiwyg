@@ -1,16 +1,18 @@
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from "@angular/forms";
-import { Directive, ElementRef, EventEmitter, Input, NgZone, Output, forwardRef } from '@angular/core';
+import { Directive, ElementRef, EventEmitter, forwardRef, Input, NgZone, Output } from '@angular/core';
 
 import FroalaEditor from 'froala-editor';
 
 @Directive({
   selector: '[froalaEditor]',
   exportAs: 'froalaEditor',
-  providers: [{
-    provide: NG_VALUE_ACCESSOR, useExisting:
-      forwardRef(() => FroalaEditorDirective),
-    multi: true
-  }]
+  providers: [
+    {
+      provide: NG_VALUE_ACCESSOR,
+      useExisting: forwardRef(() => FroalaEditorDirective),
+      multi: true
+    }
+  ]
 })
 export class FroalaEditorDirective implements ControlValueAccessor {
 
@@ -36,6 +38,8 @@ export class FroalaEditorDirective implements ControlValueAccessor {
 
   private _oldModel: string = null;
 
+  private initializeOverridden = false;
+
   constructor(el: ElementRef, private zone: NgZone) {
 
     let element: any = el.nativeElement;
@@ -50,16 +54,24 @@ export class FroalaEditorDirective implements ControlValueAccessor {
   }
 
   // Begin ControlValueAccesor methods.
-  onChange = (_) => { };
-  onTouched = () => { };
+  onChange = (_) => {
+  };
+  onTouched = () => {
+  };
 
   // Form model content changed.
   writeValue(content: any): void {
     this.updateEditor(content);
   }
 
-  registerOnChange(fn: (_: any) => void): void { this.onChange = fn; }
-  registerOnTouched(fn: () => void): void { this.onTouched = fn; }
+  registerOnChange(fn: (_: any) => void): void {
+    this.onChange = fn;
+  }
+
+  registerOnTouched(fn: () => void): void {
+    this.onTouched = fn;
+  }
+
   // End ControlValueAccesor methods.
 
   // froalaEditor directive as input: store the editor options
@@ -80,24 +92,20 @@ export class FroalaEditorDirective implements ControlValueAccessor {
 
     if (!this._hasSpecialTag) {
       this._oldModel = content;
-    }
-    else {
+    } else {
       this._model = content;
     }
 
     if (this._editorInitialized) {
       if (!this._hasSpecialTag) {
         this._editor.html.set(content);
-      }
-      else {
+      } else {
         this.setContent();
       }
-    }
-    else {
+    } else {
       if (!this._hasSpecialTag) {
         this._element.innerHTML = content || '';
-      }
-      else {
+      } else {
         this.setContent();
       }
     }
@@ -116,19 +124,14 @@ export class FroalaEditorDirective implements ControlValueAccessor {
       let modelContent: any = null;
 
       if (this._hasSpecialTag) {
-
-        let attributeNodes = this._element.attributes;
-        let attrs = {};
-
-        for (let i = 0; i < attributeNodes.length; i++) {
-
-          let attrName = attributeNodes[i].name;
-          if (this._opts.angularIgnoreAttrs && this._opts.angularIgnoreAttrs.indexOf(attrName) != -1) {
-            continue;
+        const attrs = this._element.attributes.reduce((result, attr) => {
+          if (this._opts.angularIgnoreAttrs && this._opts.angularIgnoreAttrs.indexOf(attr.name) !== -1) {
+            return result;
           }
-
-          attrs[attrName] = attributeNodes[i].value;
-        }
+          return Object.assign(result, {
+            [attr.name]: attr.value
+          });
+        }, {});
 
         if (this._element.innerHTML) {
           attrs[this.INNER_HTML_ATTR] = this._element.innerHTML;
@@ -156,7 +159,6 @@ export class FroalaEditorDirective implements ControlValueAccessor {
   }
 
   private registerEvent(eventName, callback) {
-
     if (!eventName || !callback) {
       return;
     }
@@ -206,18 +208,18 @@ export class FroalaEditorDirective implements ControlValueAccessor {
     // init editor
     this.zone.runOutsideAngular(() => {
       // Add listeners on initialized event.
-      if (!this._opts.events) this._opts.events = {}
+      if (!this._opts.events) this._opts.events = {};
 
       // Register initialized event.
       this.registerEvent('initialized', this._opts.events && this._opts.events.initialized);
       const existingInitCallback = this._opts.events.initialized;
       // Default initialized event.
-      if (!this._opts.events.initialized || !this._opts.events.initialized.overridden) {
+      if (!this._opts.events.initialized || !this.initializeOverridden) {
         this._opts.events.initialized = () => {
           this.initListeners();
           existingInitCallback && existingInitCallback.call(this._editor, this);
         };
-        this._opts.events.initialized.overridden = true;
+        this.initializeOverridden = true;
       }
 
       // Initialize the Froala Editor.
@@ -308,5 +310,8 @@ export class FroalaEditorDirective implements ControlValueAccessor {
 
   ngOnDestroy() {
     this.destroyEditor();
+  }
+
+  setDisabledState(isDisabled: boolean): void {
   }
 }
