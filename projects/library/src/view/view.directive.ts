@@ -1,4 +1,4 @@
-import { Directive, ElementRef, Input, Renderer2 } from '@angular/core';
+import { Directive, ElementRef, Renderer2, Input } from '@angular/core';
 
 @Directive({
   selector: '[froalaView]'
@@ -6,7 +6,6 @@ import { Directive, ElementRef, Input, Renderer2 } from '@angular/core';
 export class FroalaViewDirective {
 
   private _element: HTMLElement;
-  private _content: any;
 
   constructor(private renderer: Renderer2, element: ElementRef) {
     this._element = element.nativeElement;
