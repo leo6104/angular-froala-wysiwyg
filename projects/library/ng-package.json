@@ -4,5 +4,8 @@
   "deleteDestPath": true,
   "lib": {
     "entryFile": "src/index.ts"
-  }
+  },
+  "whitelistedNonPeerDependencies": [
+    "froala-editor"
+  ]
 }
